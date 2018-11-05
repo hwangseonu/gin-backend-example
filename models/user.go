@@ -13,8 +13,12 @@ type User struct {
 	Role     string `json:"role"`
 }
 
+func (u *User) Verify(password string) bool {
+	return u.Password == password
+}
+
 func CreateUser(username, password, nickname, email string) (*User, error) {
-	if u, _ := GetUser(username, nickname, email); u != nil {
+	if ExistsUser(username, nickname, email) {
 		return nil, errors.New("user already exists")
 	}
 
@@ -26,10 +30,18 @@ func CreateUser(username, password, nickname, email string) (*User, error) {
 	return u, nil
 }
 
-func GetUser(username, nickname, email string) (*User, error) {
+func ExistsUser(username, nickname, email string) bool {
 	var u *User
 	q := []bson.M{{"username": username}, {"nickname": nickname}, {"email": email}}
-	if err := DB.C("users").Find(bson.M{"$or": q}).One(&u); err != nil {
+	if err := DB.C("users").Find(bson.M{"$or": q}).One(&u); err != nil || u == nil {
+		return false
+	}
+	return true
+}
+
+func GetUser(username string) (*User, error) {
+	var u *User
+	if err := DB.C("users").Find(bson.M{"username": username}).One(&u); err != nil {
 		return nil, err
 	}
 	if u == nil {

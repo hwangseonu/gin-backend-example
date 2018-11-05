@@ -11,9 +11,16 @@ func main() {
 	user := r.Group("/users")
 	userRegister(user)
 
+	auth := r.Group("/auth")
+	authRegister(auth)
+
 	r.Run()
 }
 
 func userRegister(group *gin.RouterGroup) {
 	group.POST("", routes.SignUp)
+}
+
+func authRegister(group *gin.RouterGroup) {
+	group.POST("", routes.Auth)
 }
