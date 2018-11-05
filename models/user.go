@@ -6,11 +6,12 @@ import (
 )
 
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Nickname string `json:"nickname"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
+	ID       bson.ObjectId `json:"id" bson:"_id"`
+	Username string        `json:"username" bson:"username"`
+	Password string        `json:"password" bson:"password"`
+	Nickname string        `json:"nickname" bson:"nickname"`
+	Email    string        `json:"email" bson:"email"`
+	Role     string        `json:"role" bson:"role"`
 }
 
 func (u *User) Verify(password string) bool {
@@ -21,8 +22,7 @@ func CreateUser(username, password, nickname, email string) (*User, error) {
 	if ExistsUser(username, nickname, email) {
 		return nil, errors.New("user already exists")
 	}
-
-	u := &User{username, password, nickname, email, "ROLE_USER"}
+	u := &User{bson.NewObjectId(), username, password, nickname, email, "ROLE_USER"}
 
 	if err := DB.C("users").Insert(u); err != nil {
 		return nil, err

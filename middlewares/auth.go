@@ -19,12 +19,10 @@ func AuthRequired(sub string) gin.HandlerFunc {
 			return
 		}
 		claims := token.Claims.(*custom.CustomClaims)
-
 		if claims.Subject != sub {
 			c.AbortWithStatusJSON(422, gin.H{"message": "jwt subject must " + sub})
 			return
 		}
-
 		user, _ := models.GetUser(claims.Identity)
 		c.Set("user", user)
 		c.Next()

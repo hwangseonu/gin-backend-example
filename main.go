@@ -15,11 +15,20 @@ func main() {
 	auth := r.Group("/auth")
 	authRegister(auth)
 
+	post := r.Group("/posts")
+	postRegister(post)
+
 	r.Run()
 }
 
 func userRegister(group *gin.RouterGroup) {
 	group.POST("", routes.SignUp)
+
+	auth := group.Group("")
+	{
+		auth.Use(middlewares.AuthRequired("access"))
+		auth.GET("", routes.UserInfo)
+	}
 }
 
 func authRegister(group *gin.RouterGroup) {
@@ -29,5 +38,13 @@ func authRegister(group *gin.RouterGroup) {
 	{
 		refresh.Use(middlewares.AuthRequired("refresh"))
 		refresh.GET("/refresh", routes.Refresh)
+	}
+}
+
+func postRegister(group *gin.RouterGroup) {
+	auth := group.Group("")
+	{
+		auth.Use(middlewares.AuthRequired("access"))
+		auth.POST("", routes.NewPost)
 	}
 }

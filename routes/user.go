@@ -16,11 +16,20 @@ func SignUp(c *gin.Context) {
 		c.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
-
 	if _, err := models.CreateUser(payload.Username, payload.Password, payload.Nickname, payload.Email); err != nil {
 		c.JSON(409, gin.H{"message": err.Error()})
 		return
 	}
-
 	c.Status(201)
+}
+
+func UserInfo(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+
+	c.JSON(200, gin.H{
+		"username": user.Username,
+		"nickname": user.Nickname,
+		"email": user.Email,
+	})
 }
