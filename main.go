@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hwangseonu/gin-backend/middlewares"
 	"github.com/hwangseonu/gin-backend/routes"
 )
 
@@ -23,4 +24,10 @@ func userRegister(group *gin.RouterGroup) {
 
 func authRegister(group *gin.RouterGroup) {
 	group.POST("", routes.Auth)
+
+	refresh := group.Group("")
+	{
+		refresh.Use(middlewares.AuthRequired("refresh"))
+		refresh.GET("/refresh", routes.Refresh)
+	}
 }

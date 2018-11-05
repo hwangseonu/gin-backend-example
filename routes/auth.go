@@ -26,8 +26,8 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	access, err1 := jwt.GenerateToken("access", "hwangseonu12")
-	refresh, err2 := jwt.GenerateToken("refresh", "hwangseonu12")
+	access, err1 := jwt.GenerateToken("access", payload.Username)
+	refresh, err2 := jwt.GenerateToken("refresh", payload.Username)
 
 	if err1 != nil || err2 != nil {
 		c.JSON(500, gin.H{
@@ -39,3 +39,13 @@ func Auth(c *gin.Context) {
 	}
 }
 
+func Refresh(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+	access, err := jwt.GenerateToken("access", user.Username)
+	if err != nil {
+		c.JSON(500, gin.H{"message": err.Error()})
+	} else {
+		c.JSON(200, gin.H{"access": access})
+	}
+}

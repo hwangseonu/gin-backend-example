@@ -13,7 +13,7 @@ type CustomClaims struct {
 	Identity string `json:"identity"`
 }
 
-func (c *CustomClaims) Valid() error {
+func (c CustomClaims) Valid() error {
 	if err := c.StandardClaims.Valid(); err != nil {
 		return err
 	}
