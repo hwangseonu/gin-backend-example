@@ -1,11 +1,11 @@
-package controllers
+package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hwangseonu/gin-backend/server"
+	"github.com/hwangseonu/gin-backend/models"
 )
 
-func CreateUser(c *gin.Context) {
+func SignUp(c *gin.Context) {
 	var payload struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -13,8 +13,14 @@ func CreateUser(c *gin.Context) {
 		Email    string `json:"email" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&payload); err != nil{
-		c.AbortWithError(400, err).SetType(gin.ErrorTypeBind)
+		c.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
-	server.DB.C("users").Insert(payload)
+
+	if _, err := models.CreateUser(payload.Username, payload.Password, payload.Nickname, payload.Email); err != nil {
+		c.JSON(409, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.Status(201)
 }

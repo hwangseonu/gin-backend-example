@@ -1,8 +1,6 @@
-package server
+package models
 
-import (
-	"gopkg.in/mgo.v2"
-)
+import "gopkg.in/mgo.v2"
 
 var DB *mgo.Database
 
