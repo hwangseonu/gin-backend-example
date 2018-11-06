@@ -73,6 +73,29 @@ func GetPost(c *gin.Context) {
 	}
 }
 
+func DeletePost(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+	pid, err1 := strconv.Atoi(c.Param("pid"))
+
+	if ErrorHandle(c, 400, err1) {
+		return
+	}
+	post, err := models.GetPostById(uint32(pid))
+	if ErrorHandle(c, 404, err) {
+		return
+	}
+	if post.Author != user.ID {
+		c.JSON(403, gin.H{"message": "cannot access this resource"})
+		return
+	}
+	if ErrorHandle(c, 500, models.RemovePost(uint32(pid))) {
+		return
+	}
+	c.Status(200)
+
+}
+
 func AddComment(c *gin.Context) {
 	var payload struct {
 		Content string `json:"content" binding:"required"`
@@ -92,6 +115,34 @@ func AddComment(c *gin.Context) {
 		return
 	}
 	c.Status(201)
+}
+
+func DeleteComment(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+	pid, err1 := strconv.Atoi(c.Param("pid"))
+	cid, err2 := strconv.Atoi(c.Param("cid"))
+
+	if ErrorHandle(c, 400, err1) || ErrorHandle(c, 400, err2) {
+		return
+	}
+
+	post, err3 := models.GetPostById(uint32(pid))
+	if ErrorHandle(c, 404, err3) {
+		return
+	}
+
+	comment := post.GetComment(uint32(cid))
+	if comment == nil {
+		c.JSON(404, gin.H{"message": "Could not find comment"})
+		return
+	}
+	if comment.Author != user.ID {
+		c.JSON(403, gin.H{"message": "cannot access this resource"})
+		return
+	}
+	post.RemoveComment(comment.ID)
+	c.Status(200)
 }
 
 func ErrorHandle(c *gin.Context, code int, e error) bool {

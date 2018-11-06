@@ -35,12 +35,34 @@ func (p *Post) AddComment(author *User, content string) error {
 	return DB.C("posts").Update(bson.M{"_id": p.ID}, p)
 }
 
+func (p *Post) RemoveComment(id uint32) {
+	for i, v := range p.Comments {
+		if v.ID == id {
+			p.Comments = append(p.Comments[:i], p.Comments[i+1:]...)
+		}
+	}
+	DB.C("posts").Update(bson.M{"_id": p.ID}, p)
+}
+
+func (p *Post) GetComment(id uint32) *Comment {
+	for _, v := range p.Comments {
+		if v.ID == id {
+			return &v
+		}
+	}
+	return nil
+}
+
 func CreatePost(author *User, title, content string) (*Post, error) {
 	post := &Post{uint32(GetNextId("post")), title, content, author.ID, time.Now(), time.Now(), []Comment{}}
 	if err := DB.C("posts").Insert(post); err != nil {
 		return nil, err
 	}
 	return post, nil
+}
+
+func RemovePost(id uint32) error {
+	return DB.C("posts").RemoveId(id)
 }
 
 func GetPosts() ([]*Post, error) {

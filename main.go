@@ -48,6 +48,8 @@ func postRegister(group *gin.RouterGroup) {
 	{
 		auth.Use(middlewares.AuthRequired("access"))
 		auth.POST("", routes.NewPost)
+		auth.DELETE("/:pid", routes.DeletePost)
 		auth.POST("/:pid/comments", routes.AddComment)
+		auth.DELETE("/:pid/comments/:cid", routes.DeleteComment)
 	}
 }
