@@ -29,9 +29,17 @@ func (c CustomClaims) Valid() error {
 }
 
 func GenerateToken(t, id string) (string, error) {
+	var expire int64
+
+	if t == "access" {
+		expire = time.Now().Add(time.Hour).Unix()
+	} else {
+		expire = time.Now().AddDate(0, 1, 0).Unix()
+	}
+
 	claims := jwt.StandardClaims{
 		Audience:  "",
-		ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		ExpiresAt: expire,
 		Id:        uuid.Must(uuid.NewV4(), nil).String(),
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    "",
