@@ -13,20 +13,21 @@ func init() {
 	} else {
 		DB = s.DB("backend")
 	}
-	initCounters()
 }
 
-func initCounters() {
-	var idCounter []map[string]interface{}
+func GetNextId(doc string) int {
+	var counter map[string]interface{}
 
-	if err := DB.C("identitycounters").Find(bson.M{}).All(&idCounter); err != nil || len(idCounter) < 2 {
+	if err := DB.C("identitycounters").Find(bson.M{"document": doc}).One(&counter); err != nil || counter == nil {
 		DB.C("identitycounters").Insert(map[string]interface{}{
-			"count": 0,
-			"document": "post",
+			"count": 1,
+			"document": doc,
 		})
-		DB.C("identitycounters").Insert(map[string]interface{}{
-			"count": 0,
-			"document": "comment",
-		})
+		return 0
+	} else {
+		id := counter["count"].(int)
+		counter["count"] = id + 1
+		DB.C("identitycounters").Update(bson.M{"document": doc}, counter)
+		return id
 	}
 }
