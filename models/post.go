@@ -24,28 +24,23 @@ type Comment struct {
 	UpdateAt time.Time     `json:"update_at" bson:"update_at"`
 }
 
+func (p *Post) AddComment(author *User, content string) error {
+	p.Comments = append(p.Comments, Comment{
+		ID:       uint32(GetNextId("comment")),
+		Content:  content,
+		Author:   author.ID,
+		CreateAt: time.Now(),
+		UpdateAt: time.Now(),
+	})
+	return DB.C("posts").Update(bson.M{"_id": p.ID}, p)
+}
+
 func CreatePost(author *User, title, content string) (*Post, error) {
 	post := &Post{uint32(GetNextId("post")), title, content, author.ID, time.Now(), time.Now(), []Comment{}}
 	if err := DB.C("posts").Insert(post); err != nil {
 		return nil, err
 	}
 	return post, nil
-}
-
-func AddComment(pid uint32, author *User, content string) error {
-	var post *Post
-	if err := DB.C("posts").FindId(pid).One(&post); err != nil {
-		return err
-	} else {
-		post.Comments = append(post.Comments, Comment{
-			ID: uint32(GetNextId("comment")),
-			Content: content,
-			Author: author.ID,
-			CreateAt: time.Now(),
-			UpdateAt: time.Now(),
-		})
-		return DB.C("posts").Update(bson.M{"_id": pid}, post)
-	}
 }
 
 func GetPosts() ([]*Post, error) {

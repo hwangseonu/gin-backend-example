@@ -74,29 +74,32 @@ func GetPost(c *gin.Context) {
 }
 
 func AddComment(c *gin.Context) {
-	u, _ := c.Get("user")
-	user := u.(*models.User)
-	pid, err := strconv.Atoi(c.Param("pid"))
-
 	var payload struct {
 		Content string `json:"content" binding:"required"`
 	}
-
-	if err != nil {
-		c.JSON(400, gin.H{"message": err.Error()})
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+	pid, err1 := strconv.Atoi(c.Param("pid"))
+	err2 := c.ShouldBindJSON(&payload)
+	if ErrorHandle(c, 400, err1) || ErrorHandle(c, 400, err2){
 		return
 	}
-
-	if err := c.ShouldBindJSON(&payload); err != nil {
-		c.JSON(400, gin.H{"message": err.Error()})
+	post, err := models.GetPostById(uint32(pid))
+	if ErrorHandle(c, 404, err) {
 		return
 	}
-
-	if err := models.AddComment(uint32(pid), user, payload.Content); err != nil {
-		c.JSON(404, gin.H{"message": err.Error()})
+	if ErrorHandle(c, 500, post.AddComment(user, payload.Content)) {
 		return
 	}
 	c.Status(201)
+}
+
+func ErrorHandle(c *gin.Context, code int, e error) bool {
+	if e != nil {
+		c.AbortWithStatusJSON(code, gin.H{"message": e.Error()})
+		return true
+	}
+	return false
 }
 
 func getNicknameById(id bson.ObjectId) string {
