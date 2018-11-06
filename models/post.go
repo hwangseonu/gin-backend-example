@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -24,16 +25,28 @@ type Comment struct {
 }
 
 func CreatePost(author *User, title, content string) (*Post, error) {
-	var posts []*Post
-	var id uint32
-	if err := DB.C("posts").Find(bson.M{}).All(&posts); err != nil || len(posts) == 0 {
-		id = 0
-	} else {
-		id = posts[len(posts) - 1].ID + 1
-	}
-	post := &Post{id, title, content, author.ID, time.Now(), time.Now(), []Comment{}}
+	post := &Post{uint32(getNextId("post")), title, content, author.ID, time.Now(), time.Now(), []Comment{}}
 	if err := DB.C("posts").Insert(post); err != nil {
 		return nil, err
 	}
 	return post, nil
+}
+
+func GetPostById(id uint32) (*Post, error) {
+	var post *Post
+	if err := DB.C("posts").FindId(id).One(&post); err != nil {
+		return nil, err
+	} else if post == nil {
+		return nil, errors.New("could not find post by id")
+	}
+	return post, nil
+}
+
+func getNextId(doc string) int {
+	var counter map[string]interface{}
+	DB.C("identitycounters").Find(bson.M{"document": doc}).One(&counter)
+	id := counter["count"].(int)
+	counter["count"] = id + 1
+	DB.C("identitycounters").Update(bson.M{"document": doc}, counter)
+	return id
 }

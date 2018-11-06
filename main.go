@@ -42,6 +42,7 @@ func authRegister(group *gin.RouterGroup) {
 }
 
 func postRegister(group *gin.RouterGroup) {
+	group.GET("/:pid", routes.GetPost)
 	auth := group.Group("")
 	{
 		auth.Use(middlewares.AuthRequired("access"))

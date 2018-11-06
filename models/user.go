@@ -49,3 +49,13 @@ func GetUser(username string) (*User, error) {
 	}
 	return u, nil
 }
+
+func GetUserById(id bson.ObjectId) (*User, error) {
+	var u *User
+	if err := DB.C("users").FindId(id).One(&u); err != nil {
+		return nil, err
+	} else if u == nil {
+		return nil, errors.New("could not find user by id")
+	}
+	return u, nil
+}
