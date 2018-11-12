@@ -10,7 +10,6 @@ import (
 
 func main() {
 	r := gin.Default()
-	cors.Default()
 	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
