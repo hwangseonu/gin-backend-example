@@ -23,6 +23,10 @@ func AuthRequired(sub string) gin.HandlerFunc {
 			c.AbortWithStatusJSON(422, gin.H{"message": "jwt subject must " + sub})
 			return
 		}
+
+		if sub == "refresh" {
+			c.Set("expiration", claims.ExpiresAt)
+		}
 		user, _ := models.GetUser(claims.Identity)
 		c.Set("user", user)
 		c.Next()
