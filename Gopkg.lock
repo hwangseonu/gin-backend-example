@@ -88,6 +88,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:1ecf2a49df33be51e757d0033d5d51d5f784f35f68e5a38f797b2d3f03357d71"
+  name = "golang.org/x/crypto"
+  packages = [
+    "bcrypt",
+    "blowfish",
+  ]
+  pruneopts = "UT"
+  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+
+[[projects]]
+  branch = "master"
   digest = "1:35560529f5721d65f36dc23aa15fbf7306c5091cdc3f29f65881af5031b80cc8"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -131,6 +142,7 @@
     "github.com/dgrijalva/jwt-go",
     "github.com/gin-gonic/gin",
     "github.com/satori/go.uuid",
+    "golang.org/x/crypto/bcrypt",
     "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
   ]

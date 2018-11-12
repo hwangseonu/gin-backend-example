@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -15,14 +16,20 @@ type User struct {
 }
 
 func (u *User) Verify(password string) bool {
-	return u.Password == password
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
 }
 
 func CreateUser(username, password, nickname, email string) (*User, error) {
 	if ExistsUser(username, nickname, email) {
 		return nil, errors.New("user already exists")
 	}
-	u := &User{bson.NewObjectId(), username, password, nickname, email, "ROLE_USER"}
+	encrypt, err := bcrypt.GenerateFromPassword([]byte(password), 0)
+
+	if err != nil {
+		return nil, err
+	}
+
+	u := &User{bson.NewObjectId(), username, string(encrypt), nickname, email, "ROLE_USER"}
 
 	if err := DB.C("users").Insert(u); err != nil {
 		return nil, err
