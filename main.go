@@ -1,13 +1,24 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/hwangseonu/gin-backend/middlewares"
 	"github.com/hwangseonu/gin-backend/routes"
+	"time"
 )
 
 func main() {
 	r := gin.Default()
+	cors.Default()
+	r.Use(cors.New(cors.Config{
+		AllowMethods:     []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowAllOrigins: true,
+		AllowCredentials: true,
+		MaxAge: 12 * time.Hour,
+	}))
 
 	user := r.Group("/users")
 	userRegister(user)
@@ -20,6 +31,7 @@ func main() {
 
 	r.Run()
 }
+
 
 func userRegister(group *gin.RouterGroup) {
 	group.POST("", routes.SignUp)
