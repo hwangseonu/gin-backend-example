@@ -3,8 +3,11 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/hwangseonu/gin-backend/docs"
 	"github.com/hwangseonu/gin-backend/middlewares"
 	"github.com/hwangseonu/gin-backend/routes"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"time"
 )
 
@@ -18,6 +21,8 @@ func main() {
 		AllowCredentials: true,
 		MaxAge: 12 * time.Hour,
 	}))
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	user := r.Group("/users")
 	userRegister(user)
