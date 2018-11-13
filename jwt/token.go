@@ -5,6 +5,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hwangseonu/gin-backend/models"
 	"github.com/satori/go.uuid"
+	"os"
 	"time"
 )
 
@@ -12,6 +13,8 @@ type CustomClaims struct {
 	jwt.StandardClaims
 	Identity string `json:"identity"`
 }
+
+var secret = os.Getenv("jwt-secret")
 
 func (c CustomClaims) Valid() error {
 	if err := c.StandardClaims.Valid(); err != nil {
@@ -46,5 +49,5 @@ func GenerateToken(t, id string) (string, error) {
 		Subject: t,
 		NotBefore: time.Now().Unix(),
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS512, CustomClaims{claims, id}).SignedString([]byte("secret"))
+	return jwt.NewWithClaims(jwt.SigningMethodHS512, CustomClaims{claims, id}).SignedString([]byte(secret))
 }
