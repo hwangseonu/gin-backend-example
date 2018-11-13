@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[metadata.heroku]
+  root-package = "github.com/hwangseonu/gin-backend"
+  go-version = "1.11.2"
+  install = ["./..."]
 
 [prune]
   go-tests = true
