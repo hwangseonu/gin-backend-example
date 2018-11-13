@@ -12,7 +12,7 @@ func init() {
 	if s, err := mgo.Dial(os.Getenv("MONGODB_URI")); err != nil {
 		panic(err)
 	} else {
-		DB = s.DB("backend")
+		DB = s.DB(os.Getenv("dbname"))
 	}
 }
 
