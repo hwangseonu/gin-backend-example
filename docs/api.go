@@ -25,11 +25,17 @@ type APIInfo struct {
 	Version        string  `json:"version"`
 }
 
+type Tag struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type APIDoc struct {
 	Swagger  string  `json:"swagger"`
 	Info     APIInfo `json:"info"`
 	Host     string  `json:"host"`
 	BasePath string  `json:"basePath"`
+	Tags     []Tag   `json:"tags"`
 }
 
 func (doc APIDoc) ReadDoc() string {
@@ -60,5 +66,10 @@ func init() {
 		},
 		Host: "https://gin.mocha.ga",
 		BasePath: "",
+		Tags: []Tag{
+			{"user", "user router"},
+			{"auth", "auth router"},
+			{"post", "post router"},
+		},
 	})
 }
