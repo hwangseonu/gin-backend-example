@@ -30,12 +30,37 @@ type Tag struct {
 	Description string `json:"description"`
 }
 
+type Parameter struct {
+	In          string                 `json:"in"`
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Required    bool                   `json:"required"`
+	Schema      map[string]interface{} `json:"schema"`
+}
+
+type Response struct {
+	Description string                 `json:"description"`
+	Schema      map[string]interface{} `json:"schema"`
+}
+
+type Doc struct {
+	Tags        []string            `json:"tags"`
+	Summary     string              `json:"summary"`
+	OperationId string              `json:"operation_id"`
+	Consumes    []string            `json:"consumes"`
+	Produces    []string            `json:"produces"`
+	Parameters  []Parameter         `json:"parameters"`
+	Responses   map[string]Response `json:"responses"`
+	Deprecated  bool                `json:"deprecated"`
+}
+
 type APIDoc struct {
-	Swagger  string  `json:"swagger"`
-	Info     APIInfo `json:"info"`
-	Host     string  `json:"host"`
-	BasePath string  `json:"basePath"`
-	Tags     []Tag   `json:"tags"`
+	Swagger  string           `json:"swagger"`
+	Info     APIInfo          `json:"info"`
+	Host     string           `json:"host"`
+	BasePath string           `json:"basePath"`
+	Tags     []Tag            `json:"tags"`
+	Paths    map[string]map[string]Doc `json:"paths"`
 }
 
 func (doc APIDoc) ReadDoc() string {
@@ -67,9 +92,10 @@ func init() {
 		Host: "https://gin.mocha.ga",
 		BasePath: "",
 		Tags: []Tag{
-			{"user", "user router"},
-			{"auth", "auth router"},
-			{"post", "post router"},
+			{"users", "user route"},
+		},
+		Paths: map[string]map[string]Doc{
+			"/users": userApi,
 		},
 	})
 }
