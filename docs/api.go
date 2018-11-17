@@ -89,7 +89,7 @@ func init() {
 			},
 			Version: "1.0.0-SNAPSHOT",
 		},
-		Host: "https://gin.mocha.ga",
+		Host: "gin.mocha.ga",
 		BasePath: "",
 		Tags: []Tag{
 			{"users", "user route"},
