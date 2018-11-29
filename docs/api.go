@@ -44,23 +44,26 @@ type Response struct {
 }
 
 type Doc struct {
-	Tags        []string            `json:"tags"`
-	Summary     string              `json:"summary"`
-	OperationId string              `json:"operation_id"`
-	Consumes    []string            `json:"consumes"`
-	Produces    []string            `json:"produces"`
-	Parameters  []Parameter         `json:"parameters"`
-	Responses   map[string]Response `json:"responses"`
-	Deprecated  bool                `json:"deprecated"`
+	Tags        []string               `json:"tags"`
+	Summary     string                 `json:"summary"`
+	OperationId string                 `json:"operation_id"`
+	Consumes    []string               `json:"consumes"`
+	Produces    []string               `json:"produces"`
+	Security    map[string]interface{} `json:"security"`
+	Parameters  []Parameter            `json:"parameters"`
+	Responses   map[string]Response    `json:"responses"`
+	Deprecated  bool                   `json:"deprecated"`
 }
 
 type APIDoc struct {
-	Swagger  string           `json:"swagger"`
-	Info     APIInfo          `json:"info"`
-	Host     string           `json:"host"`
-	BasePath string           `json:"basePath"`
-	Tags     []Tag            `json:"tags"`
-	Paths    map[string]map[string]Doc `json:"paths"`
+	Swagger    string                    `json:"swagger"`
+	Info       APIInfo                   `json:"info"`
+	Host       string                    `json:"host"`
+	BasePath   string                    `json:"basePath"`
+	Tags       []Tag                     `json:"tags"`
+	Components map[string]interface{}    `json:"components"`
+	Security   map[string]interface{}    `json:"security"`
+	Paths      map[string]map[string]Doc `json:"paths"`
 }
 
 func (doc APIDoc) ReadDoc() string {
@@ -75,25 +78,27 @@ func init() {
 	swag.Register(swag.Name, &APIDoc{
 		Swagger: "2.0",
 		Info: APIInfo{
-			Title: "Gin Backend",
-			Description: "This is backend server with gin",
+			Title:          "Gin Backend",
+			Description:    "This is backend server with gin",
 			TermsOfService: "",
 			Contact: Contact{
-				Name: "hwangseonu",
-				Url: "http://blog.mocha.ga",
+				Name:  "hwangseonu",
+				Url:   "http://blog.mocha.ga",
 				Email: "hwangseonu12@naver.com",
 			},
 			License: License{
 				Name: "MIT",
-				Url: "https://github.com/hwangseonu/gin-backend/blob/master/LICENSE",
+				Url:  "https://github.com/hwangseonu/gin-backend/blob/master/LICENSE",
 			},
 			Version: "1.0.0-SNAPSHOT",
 		},
-		Host: "gin.mocha.ga",
+		Host:     "gin.mocha.ga",
 		BasePath: "",
 		Tags: []Tag{
 			{"users", "user route"},
 		},
+		Components: components,
+		Security:   security,
 		Paths: map[string]map[string]Doc{
 			"/users": userApi,
 		},
