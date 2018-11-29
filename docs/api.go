@@ -101,6 +101,8 @@ func init() {
 		Security:   security,
 		Paths: map[string]map[string]Doc{
 			"/users": userApi,
+			"/auth": authApi,
+			"/auth/refresh": refreshApi,
 		},
 	})
 }
