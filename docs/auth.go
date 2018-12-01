@@ -26,7 +26,7 @@ var authApi = map[string]Doc{
 			"200": {Description: "Success"},
 			"400": {Description: "BadRequest"},
 			"404": {Description: "NotFound"},
-			"422": {Description: "UnprocessableEntity"},
+			"422": {Description: "Unprocessable Entity"},
 		},
 	},
 }
@@ -46,6 +46,7 @@ var refreshApi = map[string]Doc{
 					"refresh": {"string"},
 				},
 			}},
+			"422": {Description: "Unproccessable Entity"},
 		},
 	},
 }

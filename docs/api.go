@@ -49,7 +49,6 @@ type Doc struct {
 	OperationId string                 `json:"operation_id"`
 	Consumes    []string               `json:"consumes"`
 	Produces    []string               `json:"produces"`
-	Security    map[string]interface{} `json:"security"`
 	Parameters  []Parameter            `json:"parameters"`
 	Responses   map[string]Response    `json:"responses"`
 	Deprecated  bool                   `json:"deprecated"`
@@ -61,8 +60,6 @@ type APIDoc struct {
 	Host       string                    `json:"host"`
 	BasePath   string                    `json:"basePath"`
 	Tags       []Tag                     `json:"tags"`
-	Components map[string]interface{}    `json:"components"`
-	Security   map[string]interface{}    `json:"security"`
 	Paths      map[string]map[string]Doc `json:"paths"`
 }
 
@@ -96,13 +93,15 @@ func init() {
 		BasePath: "",
 		Tags: []Tag{
 			{"users", "user route"},
+			{"auth", "auth route"},
+			{"posts", "post route"},
 		},
-		Components: components,
-		Security:   security,
 		Paths: map[string]map[string]Doc{
 			"/users": userApi,
 			"/auth": authApi,
 			"/auth/refresh": refreshApi,
+			"/posts": postApi,
+
 		},
 	})
 }

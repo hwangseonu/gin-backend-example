@@ -38,9 +38,6 @@ var userApi = map[string]Doc{
 		Consumes:    []string{"application/json"},
 		Produces:    []string{"*/*"},
 		Parameters:  []Parameter{},
-		Security: map[string]interface{}{
-			"bearerAuth": []string{},
-		},
 		Responses: map[string]Response{
 			"200": {
 				Description: "Success", Schema: map[string]interface{}{
