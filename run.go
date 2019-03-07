@@ -2,17 +2,13 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hwangseonu/gin-backend-example/server/routes"
 	"log"
-	"net/http"
 )
 
 func main() {
 	r := gin.Default()
-
-	r.GET("/", func (c *gin.Context) {
-		c.String(http.StatusOK, "Hello, World!")
-	})
-
+	routes.InitRoutes(r)
 	gin.SetMode(gin.DebugMode)
 	log.Fatal(r.Run(":5000"))
 }
