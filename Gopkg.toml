@@ -24,3 +24,6 @@
   name = "github.com/gin-gonic/gin"
   branch = "master"
 
+[[constraint]]
+  branch = "v2"
+  name = "gopkg.in/mgo.v2"
