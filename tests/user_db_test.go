@@ -17,7 +17,7 @@ func TestSave_Success(t *testing.T) {
 	if err = session.DB("backend").C("users").Find(bson.M{"username": name}).One(&u); err != nil {
 		t.Error(err)
 	} else {
-		if u.Username != name {
+		if u.Username != name || u.Nickname != name || u.Email != email || len(u.Roles) <= 0{
 			t.Fail()
 		}
 	}
