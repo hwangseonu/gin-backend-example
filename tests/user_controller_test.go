@@ -22,11 +22,11 @@ func TestSignUp_Success(t *testing.T) {
 		Nickname: name,
 		Email: email,
 	}
+	_ = models.DeleteByUsername(name)
 	res, err := DoPost(server.URL + "/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusCreated, res.Status)
 	log.Println(res.Content)
-
 	assert.Nil(t, models.DeleteByUsername(name))
 }
 
