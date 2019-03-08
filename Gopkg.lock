@@ -8,6 +8,12 @@
   version = "v1.1.1"
 
 [[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
@@ -18,12 +24,6 @@
   name = "github.com/gin-gonic/gin"
   packages = [".","binding","internal/json","render"]
   revision = "3dc247893e9772d0b95c47f4b32dad3d28feb488"
-
-[[projects]]
-  name = "github.com/golang/mock"
-  packages = ["gomock"]
-  revision = "51421b967af1f557f93a59e0057aaf15ca02e29c"
-  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -100,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "31b3e2308f1153431ee3a618ba967db906dee41fbb00dd3483dbd3eff153bb26"
+  inputs-digest = "a9759a3395c1b47aaa39247762fa47397ca1716836377b2b910a90abc12bca3f"
   solver-name = "gps-cdcl"
   solver-version = 1
