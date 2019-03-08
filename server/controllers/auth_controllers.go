@@ -16,17 +16,21 @@ func SignIn(c *gin.Context) {
 	user := models.FindByUsername(req.Username)
 	if user == nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "cannot find user by username"})
+		return
 	} else if user.Password != req.Password {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "password is mismatch"})
+		return
 	}
 
 	access, err1 := security.GenerateToken(security.ACCESS, user.Username)
 	refresh, err2 := security.GenerateToken(security.REFRESH, user.Username)
 	if err1 != nil || err2 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err1.Error() + "\n" + err2.Error()})
+		return
 	}
 	c.JSON(http.StatusOK, responses.AuthResponse{
 		Access:  access,
 		Refresh: refresh,
 	})
+	return
 }
