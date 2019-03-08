@@ -7,7 +7,10 @@ import (
 	"github.com/hwangseonu/gin-backend-example/server/responses"
 	"github.com/hwangseonu/gin-backend-example/server/security"
 	"net/http"
+	"time"
 )
+
+const DAY = 24 * time.Hour
 
 func SignIn(c *gin.Context) {
 	body, _ := c.Get("body")
@@ -33,4 +36,25 @@ func SignIn(c *gin.Context) {
 		Refresh: refresh,
 	})
 	return
+}
+
+func Refresh(c *gin.Context) {
+	u, _ := c.Get("user")
+	ex, _ := c.Get("exp")
+	user := u.(*models.User)
+	exp := ex.(int64)
+
+	access, err1 := security.GenerateToken(security.ACCESS, user.Username)
+	refresh, err2 := security.GenerateToken(security.REFRESH, user.Username)
+
+	if err1 != nil || err2 != nil {
+		c.JSON(500, gin.H{"message": err1.Error() + err2.Error()})
+	} else {
+		println(time.Unix(exp, 0).Sub(time.Now()).Hours())
+		if time.Unix(exp, 0).Before(time.Now().Add(7 * DAY)) {
+			c.JSON(200, gin.H{"access": access, "refresh": refresh})
+		} else {
+			c.JSON(200, gin.H{"access": access})
+		}
+	}
 }

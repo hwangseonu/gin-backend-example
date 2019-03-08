@@ -34,6 +34,10 @@ func AuthRequired(sub string, roles ...string) gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusForbidden)
 		}
 		c.Set("user", u)
+
+		if sub == security.REFRESH {
+			c.Set("exp", claims.ExpiresAt)
+		}
 	}
 }
 

@@ -30,9 +30,9 @@ func (c CustomClaims) Valid() error {
 func GenerateToken(t, username string) (string, error) {
 	var expire int64
 
-	if t == "access" {
+	if t == ACCESS {
 		expire = time.Now().Add(time.Hour).Unix()
-	} else {
+	} else if t == REFRESH {
 		expire = time.Now().AddDate(0, 1, 0).Unix()
 	}
 
