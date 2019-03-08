@@ -1,0 +1,5 @@
+GET http://localhost:5000/users
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwMjk2NTYsImlhdCI6MTU1MjAyNjA1NiwibmJmIjoxNTUyMDI2MDU2LCJzdWIiOiJhY2Nlc3MiLCJpZGVudGl0eSI6InRlc3QxIn0.0hJqvSdBAWNkVzwKPOFmHdtwryTBVyN7bnnAQ1Jh6pYuUcOQRE7j_er_Q8wMktwXAXECeGLRYT4WnQnjHN-r4g
+Accept: application/json
+
+###

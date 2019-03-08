@@ -27,3 +27,14 @@ func SignUp(c *gin.Context) {
 		Email:    u.Email,
 	})
 }
+
+func GetUser(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+
+	c.JSON(http.StatusOK, responses.UserResponse{
+		Username: user.Username,
+		Nickname: user.Nickname,
+		Email:    user.Email,
+	})
+}

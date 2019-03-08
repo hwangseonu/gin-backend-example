@@ -11,8 +11,7 @@ import (
 
 func AuthRequired(sub string, roles ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := strings.Replace(c.GetHeader("Authorization"), "Bearer", "", 1)
-		tokenString = strings.Trim(tokenString, "")
+		tokenString := strings.Replace(c.GetHeader("Authorization"), "Bearer ", "", 1)
 		if tokenString == "" {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
@@ -31,7 +30,7 @@ func AuthRequired(sub string, roles ...string) gin.HandlerFunc {
 		u := models.FindByUsername(claims.Identity)
 		if u == nil {
 			c.AbortWithStatus(http.StatusUnprocessableEntity)
-		} else if containsAll(u.Roles, roles) {
+		} else if !containsAll(u.Roles, roles) {
 			c.AbortWithStatus(http.StatusForbidden)
 		}
 		c.Set("user", u)
