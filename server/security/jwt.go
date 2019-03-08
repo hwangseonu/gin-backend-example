@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	ACCESS = "access"
+	REFRESH = "refresh"
+)
+
 type CustomClaims struct {
 	jwt.StandardClaims
 	Identity string `json:"identity"`

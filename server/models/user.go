@@ -29,7 +29,7 @@ func (u *User) Save() error {
 
 func FindByUsername(username string) *User {
 	var user *User
-	if err := users.Find(bson.M{username: username}).One(&user); err != nil {
+	if err := users.Find(bson.M{"username": username}).One(&user); err != nil {
 		return nil
 	}
 	return user
