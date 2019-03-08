@@ -50,7 +50,6 @@ func Refresh(c *gin.Context) {
 	if err1 != nil || err2 != nil {
 		c.JSON(500, gin.H{"message": err1.Error() + err2.Error()})
 	} else {
-		println(time.Unix(exp, 0).Sub(time.Now()).Hours())
 		if time.Unix(exp, 0).Before(time.Now().Add(7 * DAY)) {
 			c.JSON(200, gin.H{"access": access, "refresh": refresh})
 		} else {
