@@ -5,6 +5,7 @@ import (
 	"github.com/hwangseonu/gin-backend-example/server/requests"
 	"github.com/hwangseonu/gin-backend-example/server/security"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
 	"testing"
@@ -46,7 +47,7 @@ func TestSignUp_BadRequest(t *testing.T) {
 func TestSignUp_Conflict(t *testing.T) {
 	name := "test1234"
 	email := "test@email.com"
-	user := &models.User{Username: name, Password: name, Nickname: name, Email: email, Roles: []string{"ROLE_USER"}}
+	user := &models.User{Id: bson.NewObjectId(), Username: name, Password: name, Nickname: name, Email: email, Roles: []string{"ROLE_USER"}}
 	req := &requests.SignUpRequest{
 		Username: name,
 		Password: name,
@@ -66,6 +67,7 @@ func TestGetUser_Success(t *testing.T) {
 	jwt, err := security.GenerateToken(security.ACCESS, name)
 	assert.Nil(t, err)
 	u := &models.User{
+		Id: bson.NewObjectId(),
 		Username: name,
 		Password: name,
 		Nickname: name,

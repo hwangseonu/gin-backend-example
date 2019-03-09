@@ -36,7 +36,6 @@ func FindPostById(id int) *Post {
 		return nil
 	}
 	if user := FindUserById(post.Writer); user == nil {
-		_ = DeleteUserByUsername(user.Username)
 		_ = DeletePostById(post.Id)
 		return nil
 	}

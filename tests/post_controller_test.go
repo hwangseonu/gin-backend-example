@@ -9,13 +9,17 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
+	"strconv"
 	"testing"
 )
 
 const name = "test1234"
+var user *models.User
+const title = "test_title"
+var post *models.Post
 
 func Before() {
-	user := models.User{
+	user = &models.User{
 		Id: bson.NewObjectId(),
 		Username: name,
 		Password: name,
@@ -28,6 +32,11 @@ func Before() {
 
 func After() {
 	_ = models.DeleteUserByUsername(name)
+}
+
+func SavePost() error {
+	post = models.NewPost(title, title, user)
+	return post.Save()
 }
 
 func TestCreatPost_Success(t *testing.T) {
@@ -63,4 +72,28 @@ func TestCreatPost_BadRequest(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, res.Status)
 	After()
+}
+
+func TestGetPost_Success(t *testing.T) {
+	Before()
+	assert.Nil(t, SavePost())
+	res, err := DoGet("/posts/" + strconv.Itoa(post.Id))
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusOK, res.Status)
+	After()
+}
+
+func TestGetPost_NotFound(t *testing.T) {
+	Before()
+	assert.Nil(t, SavePost())
+	res, err := DoGet("/posts/" + strconv.Itoa(post.Id + 1))
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusNotFound, res.Status)
+	After()
+}
+
+func TestGetPost_BadRequest(t *testing.T) {
+	res, err := DoGet("/posts/abcde")
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusBadRequest, res.Status)
 }
