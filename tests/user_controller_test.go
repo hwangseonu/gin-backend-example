@@ -3,6 +3,7 @@ package tests
 import (
 	"github.com/hwangseonu/gin-backend-example/server/models"
 	"github.com/hwangseonu/gin-backend-example/server/requests"
+	"github.com/hwangseonu/gin-backend-example/server/security"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
@@ -62,6 +63,8 @@ func TestSignUp_Conflict(t *testing.T) {
 func TestGetUser_Success(t *testing.T) {
 	name := "test1234"
 	email := "test@email.com"
+	jwt, err := security.GenerateToken(security.ACCESS, name)
+	assert.Nil(t, err)
 	u := &models.User{
 		Username: name,
 		Password: name,
@@ -69,9 +72,9 @@ func TestGetUser_Success(t *testing.T) {
 		Email: email,
 		Roles: []string{"ROLE_USER"},
 	}
-	err := u.Save()
+	err = u.Save()
 	assert.Nil(t, err)
-	res, err := DoGetWithJwt("/users", name)
+	res, err := DoGetWithJwt("/users", jwt)
 	assert.Nil(t, err)
 	log.Println(res.Content)
 	assert.Equal(t, http.StatusOK, res.Status)
@@ -80,8 +83,10 @@ func TestGetUser_Success(t *testing.T) {
 
 func TestGetUser_UnprocessableEntity(t *testing.T) {
 	name := "test1234"
+	jwt, err := security.GenerateToken(security.ACCESS, name)
+	assert.Nil(t, err)
 	_ = models.DeleteByUsername(name)
-	res, err := DoGetWithJwt("/users", name)
+	res, err := DoGetWithJwt("/users", jwt)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusUnprocessableEntity, res.Status)
 }

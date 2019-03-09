@@ -3,7 +3,6 @@ package tests
 import (
 	"encoding/json"
 	s "github.com/hwangseonu/gin-backend-example/server"
-	"github.com/hwangseonu/gin-backend-example/server/security"
 	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"log"
@@ -74,18 +73,14 @@ func DoRequest(req *http.Request) (*Response, error) {
 	return &Response{Content:string(b), Status:res.StatusCode}, nil
 }
 
-func DoGetWithJwt(url, username string) (*Response, error) {
+func DoGetWithJwt(url, jwt string) (*Response, error) {
 	var req *http.Request
 	var err error
-	var access string
 
-	if req, err = http.NewRequest(http.MethodGet, server.URL + "/users", nil); err != nil {
+	if req, err = http.NewRequest(http.MethodGet, server.URL + url, nil); err != nil {
 		return nil, err
 	}
-	if access, err = security.GenerateToken(security.ACCESS, username); err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "Bearer " + access)
+	req.Header.Set("Authorization", "Bearer " + jwt)
 
 	return DoRequest(req)
 }
