@@ -5,15 +5,17 @@ import (
 )
 
 type User struct {
-	Username string
-	Password string
-	Nickname string
-	Email    string
-	Roles    []string
+	Id       bson.ObjectId `json:"id" bson:"_id"`
+	Username string        `json:"username"`
+	Password string        `json:"password"`
+	Nickname string        `json:"nickname"`
+	Email    string        `json:"email"`
+	Roles    []string      `json:"roles"`
 }
 
 func NewUser(username, password, nickname, email string, roles ...string) *User {
 	return &User{
+		Id: bson.NewObjectId(),
 		Username: username,
 		Password: password,
 		Nickname: nickname,
