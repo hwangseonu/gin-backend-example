@@ -1,17 +1,13 @@
 package tests
 
 import (
-	s "github.com/hwangseonu/gin-backend-example/server"
 	"github.com/hwangseonu/gin-backend-example/server/models"
 	"github.com/hwangseonu/gin-backend-example/server/requests"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
-
-var server = httptest.NewServer(s.GenerateApp())
 
 func TestSignUp_Success(t *testing.T) {
 	name := "test1234"
@@ -23,7 +19,7 @@ func TestSignUp_Success(t *testing.T) {
 		Email: email,
 	}
 	_ = models.DeleteByUsername(name)
-	res, err := DoPost(server.URL + "/users", req)
+	res, err := DoPost("/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusCreated, res.Status)
 	log.Println(res.Content)
@@ -40,8 +36,52 @@ func TestSignUp_BadRequest(t *testing.T) {
 		Email: email,
 	}
 	_ = models.DeleteByUsername(name)
-	res, err := DoPost(server.URL + "/users", req)
+	res, err := DoPost("/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, res.Status)
-	assert.Nil(t, models.DeleteByUsername(name))
+	_ = models.DeleteByUsername(name)
+}
+
+func TestSignUp_Conflict(t *testing.T) {
+	name := "test1234"
+	email := "test@email.com"
+	user := &models.User{Username: name, Password: name, Nickname: name, Email: email, Roles: []string{"ROLE_USER"}}
+	req := &requests.SignUpRequest{
+		Username: name,
+		Password: name,
+		Nickname: name,
+		Email: email,
+	}
+	assert.Nil(t, user.Save())
+	res, err := DoPost("/users", req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusConflict, res.Status)
+	_ = models.DeleteByUsername(name)
+}
+
+func TestGetUser_Success(t *testing.T) {
+	name := "test1234"
+	email := "test@email.com"
+	u := &models.User{
+		Username: name,
+		Password: name,
+		Nickname: name,
+		Email: email,
+		Roles: []string{"ROLE_USER"},
+	}
+	err := u.Save()
+	assert.Nil(t, err)
+	res, err := DoGetWithJwt("/users", name)
+	assert.Nil(t, err)
+	log.Println(res.Content)
+	assert.Equal(t, http.StatusOK, res.Status)
+	_ = models.DeleteByUsername(name)
+}
+
+func TestGetUser_UnprocessableEntity(t *testing.T) {
+	name := "test1234"
+	_ = models.DeleteByUsername(name)
+	res, err := DoGetWithJwt("/users", name)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Status)
 }
