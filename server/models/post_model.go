@@ -35,6 +35,11 @@ func FindPostById(id int) *Post {
 	if err := posts.FindId(id).One(&post); err != nil {
 		return nil
 	}
+	if user := FindUserById(post.Writer); user == nil {
+		_ = DeleteUserByUsername(user.Username)
+		_ = DeletePostById(post.Id)
+		return nil
+	}
 	return post
 }
 
