@@ -2,14 +2,12 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/hwangseonu/gin-backend-example/server/models"
 	"github.com/hwangseonu/gin-backend-example/server/requests"
 	"github.com/hwangseonu/gin-backend-example/server/security"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 )
@@ -130,20 +128,4 @@ func TestRefresh_Success_ReturnAccessAndRefresh(t *testing.T) {
 	log.Println("refresh: ", resp["refresh"])
 
 	_ = models.DeleteUserByUsername(name)
-}
-
-func GenerateTestToken(t, username string, exp int64) (string, error) {
-	secret := os.Getenv("JWT_SECRET")
-	if secret == "" {
-		secret = "jwt-secret"
-	}
-	claims := jwt.StandardClaims{
-		Audience:  "",
-		ExpiresAt: exp,
-		IssuedAt:  time.Now().Unix(),
-		Issuer:    "",
-		Subject: t,
-		NotBefore: time.Now().Unix(),
-	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS512, security.CustomClaims{StandardClaims: claims, Identity: username}).SignedString([]byte(secret))
 }

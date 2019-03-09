@@ -16,6 +16,11 @@ func CreatePost(c *gin.Context) {
 	req := body.(*requests.CreatePostRequest)
 	user := u.(*models.User)
 
+	if len(req.Title) <= 0 || len(req.Content) <= 0 {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
 	post := models.NewPost(req.Title, req.Content, user)
 	if err := post.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})

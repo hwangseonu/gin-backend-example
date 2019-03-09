@@ -2,13 +2,17 @@ package tests
 
 import (
 	"encoding/json"
+	"github.com/dgrijalva/jwt-go"
 	s "github.com/hwangseonu/gin-backend-example/server"
+	"github.com/hwangseonu/gin-backend-example/server/security"
 	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
+	"time"
 )
 
 var session *mgo.Session
@@ -83,4 +87,41 @@ func DoGetWithJwt(url, jwt string) (*Response, error) {
 	req.Header.Set("Authorization", "Bearer " + jwt)
 
 	return DoRequest(req)
+}
+
+func DoPostWithJwt(url, name string, body interface{}) (*Response, error) {
+	var b []byte
+	var err error
+	var jwt string
+	var req *http.Request
+
+	if b, err = json.MarshalIndent(body, "", "  "); err != nil {
+		return nil, err
+	}
+
+	if jwt, err = GenerateTestToken(security.ACCESS, name, time.Now().AddDate(0, 0, 1).Unix()); err != nil {
+		return nil, err
+	}
+	if req, err = http.NewRequest(http.MethodPost, server.URL + url, strings.NewReader(string(b))); err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", "Bearer " + jwt)
+	return DoRequest(req)
+
+}
+
+func GenerateTestToken(t, username string, exp int64) (string, error) {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "jwt-secret"
+	}
+	claims := jwt.StandardClaims{
+		Audience:  "",
+		ExpiresAt: exp,
+		IssuedAt:  time.Now().Unix(),
+		Issuer:    "",
+		Subject: t,
+		NotBefore: time.Now().Unix(),
+	}
+	return jwt.NewWithClaims(jwt.SigningMethodHS512, security.CustomClaims{StandardClaims: claims, Identity: username}).SignedString([]byte(secret))
 }
