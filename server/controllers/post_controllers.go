@@ -7,6 +7,7 @@ import (
 	"github.com/hwangseonu/gin-backend-example/server/responses"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func CreatePost(c *gin.Context) {
@@ -44,7 +45,6 @@ func GetPost(c *gin.Context) {
 		c.Status(http.StatusBadRequest)
 		return
 	}
-	println(id)
 	if post := models.FindPostById(id); post == nil {
 		c.Status(http.StatusNotFound)
 		return
@@ -69,6 +69,96 @@ func GetPost(c *gin.Context) {
 				CreateAt: post.CreateAt,
 				UpdateAt: post.UpdateAt,
 			})
+		}
+	}
+}
+
+func UpdatePost(c *gin.Context) {
+	body, _ := c.Get("body")
+	req := body.(*requests.CreatePostRequest)
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+
+	param := c.Param("post_id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	if post := models.FindPostById(id); post == nil {
+		c.Status(http.StatusNotFound)
+		return
+	} else {
+		if writer := models.FindUserById(post.Writer); writer == nil {
+			if err := models.DeletePostById(post.Id); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+			}
+			c.Status(http.StatusGone)
+			return
+		} else {
+			if !user.Equals(writer) {
+				c.Status(http.StatusForbidden)
+				return
+			}
+			post.Title = req.Title
+			post.Content = req.Content
+			post.UpdateAt = time.Now()
+			err = post.Save()
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+			}
+			c.JSON(http.StatusCreated, responses.PostResponse{
+				Id:      post.Id,
+				Title:   post.Title,
+				Content: post.Content,
+				Writer: responses.UserResponse{
+					Username: writer.Username,
+					Nickname: writer.Nickname,
+					Email:    writer.Email,
+				},
+				CreateAt: post.CreateAt,
+				UpdateAt: post.UpdateAt,
+			})
+			return
+		}
+	}
+}
+
+func DeletePost(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+
+	param := c.Param("post_id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	if post := models.FindPostById(id); post == nil {
+		c.Status(http.StatusNotFound)
+		return
+	} else {
+		if writer := models.FindUserById(post.Writer); writer == nil {
+			if err := models.DeletePostById(post.Id); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+			}
+			c.Status(http.StatusGone)
+			return
+		} else {
+			if !user.Equals(writer) {
+				c.Status(http.StatusForbidden)
+				return
+			}
+			if err := models.DeletePostById(post.Id); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+			}
+			c.Status(http.StatusOK)
+			return
 		}
 	}
 }

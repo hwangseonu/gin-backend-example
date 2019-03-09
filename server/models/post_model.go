@@ -39,5 +39,9 @@ func FindPostById(id int) *Post {
 }
 
 func DeletePostById(id int) error {
-	return users.Remove(bson.M{"_id": id})
+	return posts.RemoveId(id)
+}
+
+func ExistsPostById(id int) bool {
+	return FindPostById(id) != nil
 }

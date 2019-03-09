@@ -29,6 +29,10 @@ func (u *User) Save() error {
 	return err
 }
 
+func (u *User) Equals(t *User) bool {
+	return u.Id.String() == t.Id.String()
+}
+
 func FindUserByUsername(username string) *User {
 	var user *User
 	if err := users.Find(bson.M{"username": username}).One(&user); err != nil {

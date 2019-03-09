@@ -16,4 +16,13 @@ func InitPostRoute(e *gin.RouterGroup) {
 
 	get := e.Group("/:post_id")
 	get.GET("", controllers.GetPost)
+
+	update := e.Group("/:post_id")
+	update.Use(middlewares.AuthRequired(security.ACCESS, "ROLE_USER"))
+	update.Use(middlewares.JsonRequired(&requests.CreatePostRequest{}))
+	update.PATCH("", controllers.UpdatePost)
+
+	del := e.Group("/:post_id")
+	del.Use(middlewares.AuthRequired(security.ACCESS, "ROLE_USER"))
+	del.DELETE("", controllers.DeletePost)
 }

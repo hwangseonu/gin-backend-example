@@ -1,10 +1,10 @@
-POST http://localhost:5000/posts
+PATCH http://localhost:5000/posts/0
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxNDk0MzEsImlhdCI6MTU1MjE0NTgzMSwibmJmIjoxNTUyMTQ1ODMxLCJzdWIiOiJhY2Nlc3MiLCJpZGVudGl0eSI6InRlc3QxMjM0In0.Y1JMiV2kCeXuQIxWNPr_18YQg-CgLHhk8VQtU6z-gN9Vrk3WQ6XVF1oFzqpgLtEO-YUmkE-lfj5hClUwAET9ew
 Content-Type: application/json
 
 {
-  "title": "test_title",
-  "content": "test_content"
+  "title": "test_title1",
+  "content": "test_content1"
 }
 
 ###
