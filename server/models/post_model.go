@@ -32,7 +32,7 @@ func NewPost(title, content string, writer *User) *Post {
 
 func FindPostById(id int) *Post {
 	var post *Post
-	if err := posts.Find(bson.M{"_id": id}).One(&post); err != nil {
+	if err := posts.FindId(id).One(&post); err != nil {
 		return nil
 	}
 	return post

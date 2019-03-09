@@ -44,11 +44,12 @@ func GetPost(c *gin.Context) {
 		c.Status(http.StatusBadRequest)
 		return
 	}
-	if post := models.FindPostById(id); post != nil {
+	println(id)
+	if post := models.FindPostById(id); post == nil {
 		c.Status(http.StatusNotFound)
 		return
 	} else {
-		if user := models.FindUserById(post.Writer); user != nil {
+		if user := models.FindUserById(post.Writer); user == nil {
 			if err := models.DeletePostById(post.Id); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 				return
@@ -56,7 +57,7 @@ func GetPost(c *gin.Context) {
 			c.Status(http.StatusGone)
 			return
 		} else {
-			c.JSON(http.StatusCreated, responses.PostResponse{
+			c.JSON(http.StatusOK, responses.PostResponse{
 				Id:      post.Id,
 				Title:   post.Title,
 				Content: post.Content,
