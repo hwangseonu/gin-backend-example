@@ -27,7 +27,7 @@ func AuthRequired(sub string, roles ...string) gin.HandlerFunc {
 			c.AbortWithStatusJSON(422, gin.H{"message": "jwt subject must " + sub})
 			return
 		}
-		u := models.FindByUsername(claims.Identity)
+		u := models.FindUserByUsername(claims.Identity)
 		if u == nil {
 			c.AbortWithStatus(http.StatusUnprocessableEntity)
 		} else if !containsAll(u.Roles, roles) {

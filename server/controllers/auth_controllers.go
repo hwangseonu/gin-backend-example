@@ -16,7 +16,7 @@ func SignIn(c *gin.Context) {
 	body, _ := c.Get("body")
 	req := body.(*requests.SignInRequest)
 
-	user := models.FindByUsername(req.Username)
+	user := models.FindUserByUsername(req.Username)
 	if user == nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "cannot find user by username"})
 		return

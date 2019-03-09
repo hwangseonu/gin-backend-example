@@ -21,7 +21,7 @@ func (c CustomClaims) Valid() error {
 	if err := c.StandardClaims.Valid(); err != nil {
 		return err
 	}
-	if models.ExistsByUsername(c.Identity){
+	if models.ExistsUserByUsername(c.Identity){
 		return errors.New("cannot find user by username")
 	}
 	return nil

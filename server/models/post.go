@@ -30,7 +30,7 @@ func NewPost(title, content string, writer *User, createAt, updateAt time.Time) 
 	}
 }
 
-func FindbyId(id int) *Post {
+func FindPostById(id int) *Post {
 	var post *Post
 	if err := posts.Find(bson.M{"_id": id}).One(&post); err != nil {
 		return nil
@@ -38,6 +38,6 @@ func FindbyId(id int) *Post {
 	return post
 }
 
-func DeleteById(id int) error {
+func DeletePostById(id int) error {
 	return users.Remove(bson.M{"_id": id})
 }

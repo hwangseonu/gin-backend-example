@@ -40,7 +40,7 @@ func TestSignIn_Success(t *testing.T) {
 	log.Printf("access: %s\n", resp["access"])
 	log.Printf("refresh: %s\n", resp["refresh"])
 
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestSignIn_NotFound(t *testing.T) {
@@ -49,11 +49,11 @@ func TestSignIn_NotFound(t *testing.T) {
 		Username: name,
 		Password: name,
 	}
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 	res, err := DoPost("/auth", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusNotFound, res.Status)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestSignIn_Unauthorized(t *testing.T) {
@@ -74,7 +74,7 @@ func TestSignIn_Unauthorized(t *testing.T) {
 	res, err := DoPost("/auth", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusUnauthorized, res.Status)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestRefresh_Success_ReturnOnlyAccess(t *testing.T) {
@@ -102,7 +102,7 @@ func TestRefresh_Success_ReturnOnlyAccess(t *testing.T) {
 	_, ok := resp["refresh"]
 	assert.False(t, ok)
 
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestRefresh_Success_ReturnAccessAndRefresh(t *testing.T) {
@@ -129,7 +129,7 @@ func TestRefresh_Success_ReturnAccessAndRefresh(t *testing.T) {
 	log.Println("access: " + resp["access"])
 	log.Println("refresh: ", resp["refresh"])
 
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func GenerateTestToken(t, username string, exp int64) (string, error) {

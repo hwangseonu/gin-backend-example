@@ -19,5 +19,5 @@ func TestSave_Success(t *testing.T) {
 	assert.Equal(t, name, u.Nickname)
 	assert.Equal(t, email, u.Email)
 	assert.Len(t, u.Roles, 1)
-	_ = models.DeleteByUsername("test")
+	_ = models.DeleteUserByUsername("test")
 }

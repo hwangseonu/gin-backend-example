@@ -19,12 +19,12 @@ func TestSignUp_Success(t *testing.T) {
 		Nickname: name,
 		Email: email,
 	}
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 	res, err := DoPost("/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusCreated, res.Status)
 	log.Println(res.Content)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestSignUp_BadRequest(t *testing.T) {
@@ -36,11 +36,11 @@ func TestSignUp_BadRequest(t *testing.T) {
 		Nickname: name,
 		Email: email,
 	}
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 	res, err := DoPost("/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, res.Status)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestSignUp_Conflict(t *testing.T) {
@@ -57,7 +57,7 @@ func TestSignUp_Conflict(t *testing.T) {
 	res, err := DoPost("/users", req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusConflict, res.Status)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestGetUser_Success(t *testing.T) {
@@ -78,14 +78,14 @@ func TestGetUser_Success(t *testing.T) {
 	assert.Nil(t, err)
 	log.Println(res.Content)
 	assert.Equal(t, http.StatusOK, res.Status)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 }
 
 func TestGetUser_UnprocessableEntity(t *testing.T) {
 	name := "test1234"
 	jwt, err := security.GenerateToken(security.ACCESS, name)
 	assert.Nil(t, err)
-	_ = models.DeleteByUsername(name)
+	_ = models.DeleteUserByUsername(name)
 	res, err := DoGetWithJwt("/users", jwt)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusUnprocessableEntity, res.Status)

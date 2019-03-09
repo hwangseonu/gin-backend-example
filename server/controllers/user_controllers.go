@@ -15,7 +15,7 @@ func SignUp(c *gin.Context) {
 	body, _ := c.Get("body")
 	req := body.(*requests.SignUpRequest)
 
-	if models.ExistsByUsernameOrNicknameOrEmail(req.Username, req.Nickname, req.Email) {
+	if models.ExistsUserByUsernameOrNicknameOrEmail(req.Username, req.Nickname, req.Email) {
 		c.JSON(http.StatusConflict, gin.H{"message": "user already exists"})
 		return
 	}

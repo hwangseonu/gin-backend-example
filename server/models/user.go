@@ -29,7 +29,7 @@ func (u *User) Save() error {
 	return err
 }
 
-func FindByUsername(username string) *User {
+func FindUserByUsername(username string) *User {
 	var user *User
 	if err := users.Find(bson.M{"username": username}).One(&user); err != nil {
 		return nil
@@ -37,7 +37,7 @@ func FindByUsername(username string) *User {
 	return user
 }
 
-func ExistsByUsername(username string) bool {
+func ExistsUserByUsername(username string) bool {
 	var user *User
 	if err := users.Find(bson.M{username: username}).One(&user); err != nil {
 		return false
@@ -45,7 +45,7 @@ func ExistsByUsername(username string) bool {
 	return user != nil
 }
 
-func ExistsByUsernameOrNicknameOrEmail(username, nickname, email string) bool {
+func ExistsUserByUsernameOrNicknameOrEmail(username, nickname, email string) bool {
 	var user *User
 	if err := users.Find(bson.M{"$or": []bson.M{ {"username": username}, {"nickname": nickname}, {"email": email} }}).One(&user); err != nil {
 		return false
@@ -53,6 +53,6 @@ func ExistsByUsernameOrNicknameOrEmail(username, nickname, email string) bool {
 	return user != nil
 }
 
-func DeleteByUsername(username string) error {
+func DeleteUserByUsername(username string) error {
 	return users.Remove(bson.M{"username": username})
 }
