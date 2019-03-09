@@ -37,6 +37,14 @@ func FindUserByUsername(username string) *User {
 	return user
 }
 
+func FindUserById(id bson.ObjectId) *User {
+	var user *User
+	if err := users.FindId(id).One(&user); err != nil {
+		return nil
+	}
+	return user
+}
+
 func ExistsUserByUsername(username string) bool {
 	var user *User
 	if err := users.Find(bson.M{username: username}).One(&user); err != nil {

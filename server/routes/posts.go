@@ -13,4 +13,7 @@ func InitPostRoute(e *gin.RouterGroup) {
 	create.Use(middlewares.AuthRequired(security.ACCESS, "ROLE_USER"))
 	create.Use(middlewares.JsonRequired(&requests.CreatePostRequest{}))
 	create.POST("", controllers.CreatePost)
+
+	get := e.Group("/:post_id")
+	get.GET("", controllers.GetPost)
 }

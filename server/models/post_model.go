@@ -9,7 +9,7 @@ type Post struct {
 	Id       int       `json:"id" bson:"_id"`
 	Title    string    `json:"title"`
 	Content  string    `json:"content"`
-	Writer   User      `json:"writer"`
+	Writer   bson.ObjectId   `json:"writer"`
 	CreateAt time.Time `json:"create_at"`
 	UpdateAt time.Time `json:"update_at"`
 }
@@ -24,7 +24,7 @@ func NewPost(title, content string, writer *User) *Post {
 		Id: GetNextId("posts"),
 		Title:    title,
 		Content:  content,
-		Writer:   *writer,
+		Writer:   writer.Id,
 		CreateAt: time.Now(),
 		UpdateAt: time.Now(),
 	}
