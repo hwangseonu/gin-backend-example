@@ -127,7 +127,7 @@ func TestRefresh_Success_ReturnAccessAndRefresh(t *testing.T) {
 	assert.Nil(t, err)
 
 	log.Println("access: " + resp["access"])
-	log.Println("refresh", resp["refresh"])
+	log.Println("refresh: ", resp["refresh"])
 
 	_ = models.DeleteByUsername(name)
 }
