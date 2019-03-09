@@ -1,0 +1,10 @@
+POST http://localhost:5000/posts
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzk1OTQsImlhdCI6MTU1MjEzNTk5NCwibmJmIjoxNTUyMTM1OTk0LCJzdWIiOiJhY2Nlc3MiLCJpZGVudGl0eSI6InRlc3QxMjM0In0.Sp_nIHAVGUZTWqWmTFJsGqb9uHxi-h7gECzvZAcR0W7Jyp0EOApFapC_FE5iTAjbq7QBxo24_MdERURajs0ayA
+Content-Type: application/json
+
+{
+  "title": "test_title",
+  "content": "test_content"
+}
+
+###
