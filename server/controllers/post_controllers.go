@@ -26,19 +26,7 @@ func CreatePost(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusCreated, responses.PostResponse{
-		Id:      post.Id,
-		Title:   post.Title,
-		Content: post.Content,
-		Writer: responses.UserResponse{
-			Username: user.Username,
-			Nickname: user.Nickname,
-			Email:    user.Email,
-		},
-		CreateAt: post.CreateAt,
-		UpdateAt: post.UpdateAt,
-	})
+	c.JSON(http.StatusCreated, responses.NewPostResponse(post))
 	return
 }
 
@@ -54,19 +42,7 @@ func GetPost(c *gin.Context) {
 		c.Status(http.StatusNotFound)
 		return
 	} else {
-		user := models.FindUserById(post.Writer)
-		c.JSON(http.StatusOK, responses.PostResponse{
-			Id:      post.Id,
-			Title:   post.Title,
-			Content: post.Content,
-			Writer: responses.UserResponse{
-				Username: user.Username,
-				Nickname: user.Nickname,
-				Email:    user.Email,
-			},
-			CreateAt: post.CreateAt,
-			UpdateAt: post.UpdateAt,
-		})
+		c.JSON(http.StatusOK, responses.NewPostResponse(post))
 	}
 }
 
@@ -105,18 +81,7 @@ func UpdatePost(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, responses.PostResponse{
-			Id:      post.Id,
-			Title:   post.Title,
-			Content: post.Content,
-			Writer: responses.UserResponse{
-				Username: writer.Username,
-				Nickname: writer.Nickname,
-				Email:    writer.Email,
-			},
-			CreateAt: post.CreateAt,
-			UpdateAt: post.UpdateAt,
-		})
+		c.JSON(http.StatusOK, responses.NewPostResponse(post))
 		return
 	}
 }

@@ -76,22 +76,24 @@ func TestCreatPost_BadRequest(t *testing.T) {
 	res, err := DoPostWithJwt("/posts", name, req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusBadRequest, res.Status)
-
-
 }
 
 func TestGetPost_Success(t *testing.T) {
+	Before()
 	assert.Nil(t, SavePost())
 	res, err := DoGet("/posts/" + strconv.Itoa(post.Id))
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusOK, res.Status)
+	After()
 }
 
 func TestGetPost_NotFound(t *testing.T) {
+	Before()
 	assert.Nil(t, SavePost())
 	res, err := DoGet("/posts/" + strconv.Itoa(post.Id+1))
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusNotFound, res.Status)
+	After()
 }
 
 func TestGetPost_BadRequest(t *testing.T) {
