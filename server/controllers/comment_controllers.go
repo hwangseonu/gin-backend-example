@@ -83,3 +83,46 @@ func UpdateComment(c *gin.Context) {
 	c.Status(http.StatusNotFound)
 	return
 }
+
+func DeleteComment(c *gin.Context) {
+	u, _ := c.Get("user")
+	user := u.(*models.User)
+
+	var postId int
+	var commentId int
+	var err error
+	var post *models.Post
+
+	param := c.Param("post_id")
+	if postId, err = strconv.Atoi(param); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	param = c.Param("comment_id")
+	if commentId, err = strconv.Atoi(param); err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	if post = models.FindPostById(postId); post == nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	for i, com := range post.Comments {
+		if com.Id == commentId {
+			if com.Writer.String() != user.Id.String() {
+				c.Status(http.StatusForbidden)
+				return
+			}
+			post.Comments = append(post.Comments[:i], post.Comments[i+1:]...)
+			if err := post.Save(); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+				return
+			}
+			c.JSON(http.StatusOK, responses.NewPostResponse(post))
+			return
+		}
+	}
+	c.Status(http.StatusNotFound)
+	return
+}

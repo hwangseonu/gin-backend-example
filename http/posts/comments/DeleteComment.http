@@ -1,0 +1,5 @@
+DELETE http://localhost:5000/posts/0/comments/0
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIyMTgxMjEsImlhdCI6MTU1MjIxNDUyMSwibmJmIjoxNTUyMjE0NTIxLCJzdWIiOiJhY2Nlc3MiLCJpZGVudGl0eSI6InRlc3QxMjM0In0.inDjGJ-_0357cv9KCEGFCjTEh65RAWOfzj-F-nkgPRF7I6pjnn2H3pfhIZ8V03c5IsYLa0mbw9WpJcelKEXzrw
+Accept: application/json
+
+###
