@@ -82,6 +82,12 @@ func UpdatePost(c *gin.Context) {
 		c.Status(http.StatusBadRequest)
 		return
 	}
+
+	if len(req.Title) <= 0 || len(req.Content) <= 0 {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
 	if post := models.FindPostById(id); post == nil {
 		c.Status(http.StatusNotFound)
 		return
@@ -99,7 +105,7 @@ func UpdatePost(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
-		c.JSON(http.StatusCreated, responses.PostResponse{
+		c.JSON(http.StatusOK, responses.PostResponse{
 			Id:      post.Id,
 			Title:   post.Title,
 			Content: post.Content,

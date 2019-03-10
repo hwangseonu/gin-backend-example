@@ -107,7 +107,40 @@ func DoPostWithJwt(url, name string, body interface{}) (*Response, error) {
 	}
 	req.Header.Set("Authorization", "Bearer " + jwt)
 	return DoRequest(req)
+}
 
+func DoPatchWithJwt(url, name string, body interface{}) (*Response, error) {
+	var b []byte
+	var err error
+	var jwt string
+	var req *http.Request
+
+	if b, err = json.MarshalIndent(body, "", "  "); err != nil {
+		return nil, err
+	}
+	if jwt, err = GenerateTestToken(security.ACCESS, name, time.Now().AddDate(0, 0, 1).Unix()); err != nil {
+		return nil, err
+	}
+	if req, err = http.NewRequest(http.MethodPatch, server.URL + url, strings.NewReader(string(b))); err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", "Bearer " + jwt)
+	return DoRequest(req)
+}
+
+func DoDeleteWithJwt(url, name string) (*Response, error) {
+	var err error
+	var jwt string
+	var req *http.Request
+
+	if jwt, err = GenerateTestToken(security.ACCESS, name, time.Now().AddDate(0, 0, 1).Unix()); err != nil {
+		return nil, err
+	}
+	if req, err = http.NewRequest(http.MethodDelete, server.URL + url, nil); err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", "Bearer " + jwt)
+	return DoRequest(req)
 }
 
 func GenerateTestToken(t, username string, exp int64) (string, error) {
