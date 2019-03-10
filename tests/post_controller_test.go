@@ -175,6 +175,7 @@ func TestUpdatePost_Forbidden(t *testing.T) {
 	res, err := DoPatchWithJwt("/posts/"+strconv.Itoa(post.Id), testUsername, req)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusForbidden, res.Status)
+	_ = models.DeleteUserByUsername(testUsername)
 	After()
 }
 
@@ -221,5 +222,6 @@ func TestDeletePost_Forbidden(t *testing.T) {
 	res, err := DoDeleteWithJwt("/posts/"+strconv.Itoa(post.Id), testUsername)
 	assert.Nil(t, err)
 	assert.Equal(t, http.StatusForbidden, res.Status)
+	_ = models.DeleteUserByUsername(testUsername)
 	After()
 }

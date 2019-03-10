@@ -13,4 +13,9 @@ func InitCommentRoutes(e *gin.RouterGroup) {
 	add.Use(middlewares.JsonRequired(&requests.AddCommentRequest{}))
 	add.Use(middlewares.AuthRequired(security.ACCESS, "ROLE_USER"))
 	add.POST("", controllers.AddComment)
+
+	update := e.Group("/:comment_id")
+	update.Use(middlewares.JsonRequired(&requests.AddCommentRequest{}))
+	update.Use(middlewares.AuthRequired(security.ACCESS, "ROLE_USER"))
+	update.PATCH("", controllers.UpdateComment)
 }
